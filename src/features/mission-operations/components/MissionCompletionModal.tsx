@@ -21,14 +21,14 @@ export const MissionCompletionModal: React.FC<MissionCompletionModalProps> = ({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-4 font-mono select-none"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm p-3 sm:p-4 font-mono select-none overflow-hidden"
       role="dialog"
       aria-modal="true"
       aria-label="Mission Completion Evaluation and Finalization"
     >
-      <div className="w-full max-w-xl bg-[#080D16] border border-[#F5A623]/50 rounded-lg p-5 shadow-[0_0_50px_rgba(245,166,35,0.2)] flex flex-col gap-4 text-xs">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/10 pb-3">
+      <div className="w-full max-w-xl max-h-[calc(100vh-2rem)] bg-[#080D16] border border-[#F5A623]/50 rounded-lg shadow-[0_0_50px_rgba(245,166,35,0.2)] flex flex-col text-xs overflow-hidden">
+        {/* Header - Anchored */}
+        <div className="shrink-0 flex items-center justify-between border-b border-white/10 p-4 bg-[#080D16]">
           <div>
             <h3 className="text-white font-bold text-sm tracking-widest uppercase">
               MISSION DIRECTIVE FINALIZATION // EXPEDITION-V
@@ -49,69 +49,72 @@ export const MissionCompletionModal: React.FC<MissionCompletionModalProps> = ({
           </button>
         </div>
 
-        {/* Overview Banner */}
-        <div className="flex items-center justify-between p-3.5 rounded bg-black/60 border border-white/10">
-          <div>
-            <span className="text-[#A5B1C2] text-[10px] block uppercase">Readiness Status</span>
-            <span
-              className={`text-base font-bold tracking-wider ${
-                evaluation.isEligible ? 'text-[#31C48D]' : 'text-[#F5A623]'
-              }`}
-            >
-              {evaluation.status.replace('_', ' ')}
-            </span>
-          </div>
-          <div className="text-right">
-            <span className="text-[#A5B1C2] text-[10px] block uppercase">Criteria Fulfilled</span>
-            <span className="text-white font-extrabold text-xl">{evaluation.scorePercent}%</span>
-          </div>
-        </div>
-
-        {/* Criteria Checklist */}
-        <div className="space-y-2">
-          <span className="text-[#A5B1C2] font-semibold text-[10px] uppercase block">
-            Authoritative Completion Criteria
-          </span>
-          <div className="space-y-1.5 max-h-60 overflow-y-auto pr-1">
-            {evaluation.criteria.map((crit) => (
-              <div
-                key={crit.id}
-                className="flex items-start justify-between p-2.5 rounded bg-white/5 border border-white/10 gap-3"
+        {/* Scrollable Body - Independently bounded */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4">
+          {/* Overview Banner */}
+          <div className="flex items-center justify-between p-3.5 rounded bg-black/60 border border-white/10">
+            <div>
+              <span className="text-[#A5B1C2] text-[10px] block uppercase">Readiness Status</span>
+              <span
+                className={`text-base font-bold tracking-wider ${
+                  evaluation.isEligible ? 'text-[#31C48D]' : 'text-[#F5A623]'
+                }`}
               >
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-white font-bold">{crit.label}</span>
-                    {crit.isMandatory && (
-                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#EF6464]/20 text-[#EF6464] border border-[#EF6464]/30 font-semibold">
-                        MANDATORY
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[#A5B1C2] text-[10px] mt-0.5 leading-relaxed">
-                    {crit.description}
-                  </p>
-                </div>
-                <span
-                  className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold ${
-                    crit.met
-                      ? 'bg-[#31C48D]/20 text-[#31C48D] border border-[#31C48D]/40'
-                      : 'bg-white/5 text-[#A5B1C2] border border-white/10'
-                  }`}
-                >
-                  {crit.met ? '[✓] SATISFIED' : '[PENDING]'}
-                </span>
-              </div>
-            ))}
+                {evaluation.status.replace('_', ' ')}
+              </span>
+            </div>
+            <div className="text-right">
+              <span className="text-[#A5B1C2] text-[10px] block uppercase">Criteria Fulfilled</span>
+              <span className="text-white font-extrabold text-xl">{evaluation.scorePercent}%</span>
+            </div>
           </div>
+
+          {/* Criteria Checklist */}
+          <div className="space-y-2">
+            <span className="text-[#A5B1C2] font-semibold text-[10px] uppercase block">
+              Authoritative Completion Criteria
+            </span>
+            <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+              {evaluation.criteria.map((crit) => (
+                <div
+                  key={crit.id}
+                  className="flex items-start justify-between p-2.5 rounded bg-white/5 border border-white/10 gap-3"
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-white font-bold">{crit.label}</span>
+                      {crit.isMandatory && (
+                        <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#EF6464]/20 text-[#EF6464] border border-[#EF6464]/30 font-semibold">
+                          MANDATORY
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[#A5B1C2] text-[10px] mt-0.5 leading-relaxed">
+                      {crit.description}
+                    </p>
+                  </div>
+                  <span
+                    className={`shrink-0 px-2 py-0.5 rounded text-[10px] font-bold ${
+                      crit.met
+                        ? 'bg-[#31C48D]/20 text-[#31C48D] border border-[#31C48D]/40'
+                        : 'bg-white/5 text-[#A5B1C2] border border-white/10'
+                    }`}
+                  >
+                    {crit.met ? '[✓] SATISFIED' : '[PENDING]'}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Summary Notes */}
+          <p className="text-[#A5B1C2] text-[11px] leading-relaxed p-2.5 rounded bg-white/5 border border-white/10">
+            {evaluation.summary}
+          </p>
         </div>
 
-        {/* Summary Notes */}
-        <p className="text-[#A5B1C2] text-[11px] leading-relaxed p-2.5 rounded bg-white/5 border border-white/10">
-          {evaluation.summary}
-        </p>
-
-        {/* Actions */}
-        <div className="flex justify-between items-center pt-2 border-t border-white/10">
+        {/* Actions - Anchored Footer */}
+        <div className="shrink-0 flex justify-between items-center p-4 border-t border-white/10 bg-[#060A10]">
           <button
             type="button"
             onClick={() => {

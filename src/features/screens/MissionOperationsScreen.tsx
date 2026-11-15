@@ -178,7 +178,7 @@ export const MissionOperationsScreen: React.FC = () => {
   const isEngineFiring = (snap.flightState as string) === 'MANEUVER_EXECUTION';
 
   return (
-    <div className="relative w-screen h-screen overflow-hidden bg-[#040609] flex flex-col select-none font-mono">
+    <div className="relative w-screen h-screen max-h-screen overflow-hidden bg-[#040609] flex flex-col select-none font-mono">
       {/* Compatibility metadata headers for tests and accessibility */}
       <div className="sr-only" aria-hidden="true">
         <span>SECTOR 17 · LIVE MISSION OPERATIONS</span>
@@ -194,42 +194,68 @@ export const MissionOperationsScreen: React.FC = () => {
       </div>
 
       {/* 1. TOP MISSION STATUS BAR */}
-      <MissionOperationsHeader
-        currentStageId={snap.campaign?.currentStageId}
-        isLanderDeployed={isLanderDeployed}
-        onDeployLander={handleDeployLander}
-        onReturnToTrajectory={handleReturnToTrajectory}
-        onOpenDecisions={() => navigate('/decisions')}
-        decisionsCount={snap.availableDecisions.length}
-        networkStatus={snap.subsystems?.COMMUNICATIONS === 'DEGRADED' ? 'DEGRADED' : 'NOMINAL'}
-        flightState={snap.flightState}
-      />
+      <div className="shrink-0 z-30">
+        <MissionOperationsHeader
+          currentStageId={snap.campaign?.currentStageId}
+          isLanderDeployed={isLanderDeployed}
+          onDeployLander={handleDeployLander}
+          onReturnToTrajectory={handleReturnToTrajectory}
+          onOpenDecisions={() => navigate('/decisions')}
+          decisionsCount={snap.availableDecisions.length}
+          networkStatus={snap.subsystems?.COMMUNICATIONS === 'DEGRADED' ? 'DEGRADED' : 'NOMINAL'}
+          flightState={snap.flightState}
+        />
+      </div>
 
-      {/* 2. MAIN WORKSPACE (UPPER ~75% OF SCREEN) */}
-      <div className="relative flex-1 w-full h-full min-h-0 flex overflow-hidden">
-        {/* Left Telemetry Panel: Power & Thermal (w-72 or w-80) */}
-        <div className="w-72 lg:w-80 h-full shrink-0 z-20">
+      {/* 2. MAIN WORKSPACE (UPPER VIEWPORT: BOUNDED & STABLE) */}
+      <div className="relative flex-1 min-h-0 w-full flex overflow-hidden">
+        {/* Left Telemetry Panel: Power & Thermal (w-72 or w-80, scrollable) */}
+        <div className="w-72 lg:w-80 h-full shrink-0 flex flex-col min-h-0 z-20">
           <PowerThermalPanel snap={snap} />
         </div>
 
         {/* Central 3D Viewport: AETHON Spacecraft & Europa (Flex-1) */}
-        <div className="relative flex-1 h-full min-w-0 z-10" data-tutorial-id="viewport-operations-spacecraft">
+        <div
+          className="relative flex-1 h-full min-w-0 min-h-0 z-10"
+          data-tutorial-id="viewport-operations-spacecraft"
+        >
           <OperationalSpacecraftViewport
             flightState={snap.flightState}
             isEngineFiring={isEngineFiring}
           />
         </div>
 
-        {/* Right Telemetry Panel: Propulsion & Navigation (w-72 or w-80) */}
-        <div className="w-72 lg:w-80 h-full shrink-0 z-20">
-          <PropulsionNavigationPanel snap={snap} />
+        {/* Right Telemetry & Operations Panel: Dedicated Anchored Actions */}
+        <div className="w-72 lg:w-80 h-full shrink-0 flex flex-col min-h-0 z-20 bg-[#060A10]/95 border-l border-white/10">
+          {/* Section Upper: Propulsion & Navigation Telemetry (independently scrollable) */}
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <PropulsionNavigationPanel snap={snap} />
+          </div>
+
+          {/* Section Lower: Dedicated Mission Action Controls (permanently anchored) */}
+          <div className="shrink-0 border-t border-white/15 bg-[#080D16] p-3 shadow-2xl z-20">
+            <div className="text-[10px] text-[#A5B1C2] uppercase font-bold tracking-widest mb-1.5 flex items-center justify-between">
+              <span>MISSION CONTROLS</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#35C6F4] animate-ping" />
+            </div>
+            <OperationsControlPanel
+              onOpenComms={() => setCommsModalOpen(true)}
+              onOpenScience={() => setScienceModalOpen(true)}
+              onOpenCompletion={() => setCompletionModalOpen(true)}
+              isReadyForDebrief={evaluation.isEligible}
+              completionScorePercent={evaluation.scorePercent}
+            />
+          </div>
         </div>
       </div>
 
-      {/* 3. BOTTOM PANEL: MISSION CONTROL (~130px height) */}
-      <div className="h-32 w-full bg-[#060A10] border-t border-white/10 grid grid-cols-12 shrink-0 z-30">
-        {/* Section A: Mission Elapsed Time (Cols 1-4) */}
-        <div className="col-span-4 h-full" data-tutorial-id="controls-met-clock">
+      {/* 3. BOTTOM PANEL: MISSION CONTROL MET CLOCK & EVENT LOG (~112-128px height) */}
+      <div className="h-28 sm:h-32 w-full bg-[#060A10] border-t border-white/10 flex min-h-0 shrink-0 z-30 overflow-hidden">
+        {/* Section A: Mission Elapsed Time */}
+        <div
+          className="w-80 lg:w-96 shrink-0 h-full border-r border-white/10"
+          data-tutorial-id="controls-met-clock"
+        >
           <MissionElapsedTime
             metSeconds={snap.metSeconds}
             formattedMET={snap.formattedMET}
@@ -241,25 +267,14 @@ export const MissionOperationsScreen: React.FC = () => {
           />
         </div>
 
-        {/* Section B: Event Log (Cols 5-9) */}
-        <div className="col-span-5 h-full">
+        {/* Section B: Event Log (expanded across entire remaining bottom width) */}
+        <div className="flex-1 min-w-0 h-full">
           <MissionEventLog events={snap.recentEvents} />
-        </div>
-
-        {/* Section C: Operations Control (Cols 10-12) */}
-        <div className="col-span-3 h-full">
-          <OperationsControlPanel
-            onOpenComms={() => setCommsModalOpen(true)}
-            onOpenScience={() => setScienceModalOpen(true)}
-            onOpenCompletion={() => setCompletionModalOpen(true)}
-            isReadyForDebrief={evaluation.isEligible}
-            completionScorePercent={evaluation.scorePercent}
-          />
         </div>
       </div>
 
       {/* 4. FOOTER DISCLAIMER */}
-      <footer className="w-full h-5 bg-[#030508] border-t border-white/5 px-4 flex items-center justify-between text-[9px] text-[#A5B1C2]/50 font-mono select-none">
+      <footer className="shrink-0 w-full h-5 bg-[#030508] border-t border-white/5 px-4 flex items-center justify-between text-[9px] text-[#A5B1C2]/50 font-mono select-none">
         <span>AETHON-EXP-V // FLIGHT OPERATIONS STATION</span>
         <span>SECTOR 17 is an independent project. NASA does not endorse SECTOR 17.</span>
       </footer>
