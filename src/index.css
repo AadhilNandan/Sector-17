@@ -1,0 +1,237 @@
+@import "tailwindcss";
+
+@theme {
+  /* Grounded Aerospace Palette */
+  --color-void: #07090C;
+  --color-hull: #0D1116;
+  --color-panel: #151B22;
+  --color-panel-raised: #1C242D;
+  --color-rule: #2B3642;
+
+  --color-text-primary: #E6E2D6;
+  --color-text-secondary: #A9B0B5;
+  --color-text-muted: #6B757D;
+
+  --color-signal-ice: #7FB7D4;
+  --color-caution-amber: #E0A43A;
+  --color-fault-red: #D8503F;
+  --color-nominal-green: #6FAE7C;
+  --color-jovian-ochre: #B5733C;
+  --color-europa-ice: #8FB8CC;
+
+  --color-omega-lume: #D8E6A0;
+  --color-omega-umber: #2A2218;
+
+  /* Backward-Compatibility Aliases */
+  --color-void-black: #07090C;
+  --color-deep-space: #0D1116;
+  --color-midnight-navy: #151B22;
+  --color-panel-surface: #151B22;
+  --color-elevated-surface: #1C242D;
+  --color-mission-amber: #E0A43A;
+  --color-warm-gold: #B5733C;
+  --color-technical-cyan: #7FB7D4;
+  --color-success-green: #6FAE7C;
+  --color-critical-red: #D8503F;
+
+  /* Approved Typography System */
+  --font-display: "Barlow Condensed", system-ui, -apple-system, sans-serif;
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --font-serif: "Newsreader", Georgia, serif;
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #07090C;
+    color: #E6E2D6;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    user-select: none;
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.04em;
+  }
+
+  code, pre, .font-mono, .telemetry-val {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  p, span, div, .font-sans {
+    font-family: var(--font-sans);
+  }
+
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+}
+
+/* Aerospace Technical Scrollbars */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0D1116;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2B3642;
+  border-radius: 1px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #7FB7D4;
+}
+
+/* Aerospace Structural Panels — No Blur, Rectangular 2px Corners, 1px Rule */
+.aerospace-panel,
+.glass-panel {
+  background-color: #151B22;
+  border: 1px solid #2B3642;
+  border-radius: 2px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.aerospace-panel-raised,
+.glass-panel-elevated {
+  background-color: #1C242D;
+  border: 1px solid #2B3642;
+  border-radius: 2px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.55);
+}
+
+.aerospace-panel-highlight,
+.glass-panel-highlight {
+  background-color: #1C242D;
+  border: 1px solid #7FB7D4;
+  border-radius: 2px;
+  box-shadow: 0 4px 14px rgba(127, 183, 212, 0.15);
+}
+
+/* Corner L-Brackets for Selected/Active Technical Items */
+.corner-bracket-tl {
+  position: relative;
+}
+.corner-bracket-tl::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid #7FB7D4;
+  border-left: 2px solid #7FB7D4;
+  pointer-events: none;
+}
+
+.corner-brackets {
+  position: relative;
+}
+.corner-brackets::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  width: 6px;
+  height: 6px;
+  border-top: 2px solid #7FB7D4;
+  border-left: 2px solid #7FB7D4;
+  pointer-events: none;
+}
+.corner-brackets::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 6px;
+  height: 6px;
+  border-bottom: 2px solid #7FB7D4;
+  border-right: 2px solid #7FB7D4;
+  pointer-events: none;
+}
+
+/* Buttons: Grounded Aerospace Style */
+.btn-amber-gold,
+.btn-aerospace-primary {
+  position: relative;
+  background-color: #E0A43A;
+  border: 1px solid #F5B955;
+  color: #07090C;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  box-shadow: 0 2px 6px rgba(224, 164, 58, 0.25);
+  transition: all 0.15s ease-out;
+  cursor: pointer;
+}
+
+.btn-amber-gold:hover,
+.btn-aerospace-primary:hover {
+  background-color: #F0B349;
+  border-color: #FCD385;
+  box-shadow: 0 3px 10px rgba(224, 164, 58, 0.4);
+}
+
+.btn-amber-gold:active,
+.btn-aerospace-primary:active {
+  background-color: #C88E28;
+  transform: translateY(1px);
+}
+
+.btn-glass-pill,
+.btn-aerospace-secondary {
+  position: relative;
+  background-color: #1C242D;
+  border: 1px solid #2B3642;
+  color: #E6E2D6;
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  transition: all 0.15s ease-out;
+  cursor: pointer;
+}
+
+.btn-glass-pill:hover,
+.btn-aerospace-secondary:hover {
+  background-color: #232D38;
+  border-color: #7FB7D4;
+  color: #FFFFFF;
+}
+
+.btn-glass-pill:active,
+.btn-aerospace-secondary:active {
+  transform: translateY(1px);
+}
+
+/* Grid & Reference Lines */
+.tech-grid {
+  background-size: 24px 24px;
+  background-image:
+    linear-gradient(to right, rgba(43, 54, 66, 0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(43, 54, 66, 0.35) 1px, transparent 1px);
+}
+
+.ambient-vignette {
+  background: radial-gradient(circle at center, transparent 40%, rgba(7, 9, 12, 0.7) 85%, #07090C 100%);
+}
